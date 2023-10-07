@@ -1,0 +1,78 @@
+version: 2.1
+orbs:
+  gh: circleci/github-cli@1.0
+jobs:
+  build:
+    working_directory: ~/automation
+    docker:
+      - image: circleci/node:12.16.3-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: |
+            npm install --frozen-lockfile
+      - save_cache:
+          name: Save Cache
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.lock.json" }}
+      - run:
+          name: Prettier Check
+          command: |
+            npm prettier:check
+
+  publish_blui_publish:
+    docker:
+      - image: circleci/node:12.16.3-browsers
+    steps:
+      - checkout
+      - run:
+          name: Authenticate with registry
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+            echo "//registry.yarnpkg.com/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish @brightlayer-ui/publish
+          command: |
+            cd xtra-hrms-publish && bash scripts/publish.sh -b $CIRCLE_BRANCH
+
+  publish_blui_tag:
+    docker:
+      - image: circleci/node:12.16.3-browsers
+    steps:
+      - checkout
+      - run:
+          name: Authenticate with registry
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+            echo "//registry.yarnpkg.com/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish @brightlayer-ui/tag
+          command: |
+            cd xtra-hrms-tag && yarn publish:package -b $CIRCLE_BRANCH
+
+workflows:
+  version: 2
+  blui_automation:
+    jobs:
+      - build
+      - publish_blui_publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - dev
+      - publish_blui_tag:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - dev

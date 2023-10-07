@@ -1,0 +1,23 @@
+name: Tagging
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  CURRENT_BRANCH: ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tag-publish-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd xtra-hrms-publish && npm tag:package -b ${CURRENT_BRANCH} -s -xtra-hrms-publish
+  tag-tag-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd xtra-hrms-tag && npm tag:package -b ${CURRENT_BRANCH} -s -xtra-hrms-tag
+      

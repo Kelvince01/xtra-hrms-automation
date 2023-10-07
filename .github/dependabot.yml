@@ -1,0 +1,46 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    open-pull-requests-limit: 1
+    target-branch: "dev"
+    labels:
+      - "external-dependency"
+      - 'xtra-hrms'
+
+  - package-ecosystem: "npm"
+    directory: "/xtra-hrms-automation"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    open-pull-requests-limit: 1
+    target-branch: "dev"
+    labels:
+      - "external-dependency"
+      - 'xtra-hrms'
+
+  - package-ecosystem: "npm"
+    directory: "/xtra-hrms-publish"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    open-pull-requests-limit: 1
+    target-branch: "dev"
+    labels:
+      - "external-dependency"
+      - 'xtra-hrms'
+
+  - package-ecosystem: "npm"
+    directory: "/xtra-hrms-tag"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    open-pull-requests-limit: 1
+    target-branch: "dev"
+    labels:
+      - "external-dependency"
+      - 'xtra-hrms'
+      
